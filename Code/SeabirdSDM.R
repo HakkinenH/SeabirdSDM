@@ -43,8 +43,8 @@ library(rasterVis)
 
 
 setwd("C:/Users/Henry/Documents/Research/ZSL/Repos/SeabirdCCVA/IntermediateOutput/SDM")
-source("../../code/SDM_functionsPre.R")
-source("../../code/logSettings.R")
+source("../../code/Dependencies/SDM_functionsPre.R")
+source("../../code/Dependencies/logSettings.R")
 
 #load OSPAR map
 ospar<-shapefile("C:/Users/Henry/Documents/Research/ZSL/ProcessedData/OSPAR_region/ospar_LandSea.shp")

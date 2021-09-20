@@ -1,4 +1,6 @@
 
+#An experiment in defining a training area for SDM validation
+#no longer used
 
 
 

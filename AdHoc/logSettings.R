@@ -1,3 +1,5 @@
+#an experiment in logging key SDM features, now defunct
+
 library(log4r)
 #> 
 #> Attaching package: 'log4r'

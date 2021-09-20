@@ -1,4 +1,6 @@
 
+#backup alternative methods to CalculateDistShore
+#eventually retired because this method is so slow
 
 ############################################################
 ############################################################

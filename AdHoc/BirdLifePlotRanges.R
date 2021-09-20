@@ -1,3 +1,5 @@
+##Exploratory file used to open and map species ranges.
+
 
 rm(list=ls())
 #open birdlife seabird data and explore

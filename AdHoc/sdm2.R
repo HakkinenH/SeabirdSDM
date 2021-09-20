@@ -1,4 +1,6 @@
 
+#rough version of SDM, kept for some notes on additional plots and function
+#should probably come back and delete this at some point
 
 #clear env
 rm(list=ls())

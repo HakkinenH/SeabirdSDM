@@ -1,4 +1,7 @@
 
+#non-functioning code
+#wanted to look at Frans work
+
 #run the Frans et al SDM
 #code from https://besjournals.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2F2041-210X.12847&file=mee312847-sup-0002-AppendixS1.pdf
 
