@@ -5,9 +5,9 @@
 
 
 #anything in input folder
-/Input/EnvData/
+/Input/EnvData
 /Input/OccData/
-/Input/StudyArea/
+/Input/StudyArea
 
 #anything in final plot
 /FinalOutput/
@@ -21,4 +21,4 @@
 *DS_Store
 
 
-/Sdougallii/
+/Sdougallii
