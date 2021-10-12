@@ -170,7 +170,7 @@ pseudodraws<-3
 #choose how many evaluation runs (70/30 split), minimum of 2
 evalruns<-3
 #set number of pseudo-absences
-nvalid<-1000
+nvalid<-10000
 
 #define model list
 #at the moment code will use up to GLM, GAM, ANN, RF, MAXENT
@@ -183,6 +183,7 @@ model_list<-c("GLM","GAM","ANN","RF","MAXENT.Phillips")
 #after loading the data it will then run the main SDM functions
 #output will be in 
 source("./Code/SeabirdSDM.R")
+
 
 
 

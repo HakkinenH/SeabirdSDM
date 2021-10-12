@@ -349,14 +349,14 @@
 
   
   png(filename=paste0("./IntermediateOutput/SeabirdSDM/OutputPlots/",sp_name,"/",modeltype,"/Finalensemble.png"), width=8, height=8, units="in", res=600)
-  plwm +
-    layer(sp.polygons(landsh, col=alpha("grey",0.3))) 
+  print ( plwm +
+    layer(sp.polygons(landsh, col=alpha("grey",0.3))) )
   dev.off()
     
   
   png(filename=paste0("./IntermediateOutput/SeabirdSDM/OutputPlots/",sp_name,"/",modeltype,"/Finalensemble_uncertainty.png"), width=8, height=8, units="in", res=600)
-  plun +
-    layer(sp.polygons(landsh, col=alpha("grey",0.3))) 
+  print ( plun +
+    layer(sp.polygons(landsh, col=alpha("grey",0.3))) )
   dev.off()
   
   
