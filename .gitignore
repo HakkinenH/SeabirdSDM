@@ -4,21 +4,8 @@
 .Ruserdata
 
 
-#anything in input folder
-/InputData/EnvData
-/InputData/OccData/
-/InputData/StudyArea
-
-#anything in final plot
-/FinalOutput/
-
-#anything in intermediate output
-/IntermediateOutput/CalculateDistShore
-/IntermediateOutput/CombineEnvData
-/IntermediateOutput/SeabirdSDM
-
 #ignore the .DS_Store files
 *DS_Store
 
-
+#ignore this too
 /Sdougallii
