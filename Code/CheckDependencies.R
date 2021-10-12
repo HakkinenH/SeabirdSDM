@@ -14,3 +14,7 @@ require(dismo)
 
 
 #check that required files and folders are present
+
+if(!dir.exists(paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name,"/"))){
+  dir.create(paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name))
+}
