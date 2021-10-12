@@ -5,9 +5,9 @@
 
 
 #anything in input folder
-/Input/EnvData
-/Input/OccData/
-/Input/StudyArea
+/InputData/EnvData
+/InputData/OccData/
+/InputData/StudyArea
 
 #anything in final plot
 /FinalOutput/

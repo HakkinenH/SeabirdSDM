@@ -25,9 +25,10 @@ The following is a description of the files and folders required to run the mode
 	# AdHoc: Contains exploratory/experimental code that has not been fully integrated into the workflow. There is no guarantee this will run correctly after pulling repo (or at least without some adjustment)
 
 	# Code: The main repo folder containing all major code and functions. Described in more detail below
-		#DataProcessing: Subfolder for code that processes data (e.g. occurrence and environmental) into the necessary format for models
 		#Dependencies: Underlying custom functions used in multiple scripts
 		
+	#InputData: The occurrence and environmental data to process and use. Also a shapefile of the study area extent
+	
 	# FinalOutput: Final figures and tables produced by main SDM. Used to assess final results or produce final figures/tables for inclusion in paper
 
 	# IntermediateOutput: For a variety of reasons we might want to produce output that is not needed in the final publication, e.g. diagnostics or subsidiery analysis. All such output is stored here. Subfolders are named according to the R script that generates the output.
@@ -37,13 +38,28 @@ The following is a description of the files and folders required to run the mode
 
 ### INPUT ###
 
-	There are a variety of data required to run an SDM, in particular a defined area of study, occurrence data and environmental data
+	In order to run an SDM, you need a defined area of study, occurrence data and environmental data
+	
 	Since this data does not belong to the authors it is not included in the repository
 	However we specify how to acquire the data and any processing required in "DataSources.txt"
-	It is assumed by the code the data will be stored in folders called "RawData" (for raw, unprocessed data) or "ProcessedData" (for filtered, processed or otherwise altered data). These directories can be adjusted in "SetDirectories.R".
+	It is assumed by the code the data will be stored in the folder "InputData". These directories can be adjusted in "1-Wrapper.R".
 
 	In order to run an SDM you need to have the following files compiled. This can be done with the files included in "DataProcessing" or can be done manually outside of the repo.
 	
+	
+	
+	### ENV DATA
+		#MARINE
+		A raster stack of marine variables. This should be aligned and cropped to the study area. Name is assumed to be "MarineEnvVariables_5m.tif" but this can be changed in "Directories.R"
+		
+		#TERRESTRIAL
+		A raster stack of terrestrial variables. This should be aligned and cropped to the study area. Name is assumed to be "TerrEnvVariables_5m.tif" but this can be changed in "Directories.R"
+		
+	### OCCURRENCE DATA
+	This should be prepared occurrence data, in the form of a spatial points dataframe or shapefile. Names are assumed to be "speciesname"
+	
+	### STUDY AREA
+	This is provided in "InputData/StudyArea" as "ospar_LandSea.shp". For how this was made see "DataSources.txt". can be replaced with whatever area you prefer.
 	
 
 ### ###
@@ -53,18 +69,28 @@ The following is a description of the files and folders required to run the mode
 All code required to run the model is in the "code" folder
 
 If all data is present, then only two files need to be opened and adjusted
-"SetDirectories.R" should be customised to whatever is required. By default internal references should work for anyone, but external links (in particular links to downloaded data not included in the repo) should be checked.
-"SeabirdSDM.R" This calls on all the other scripts, and can be opened and run stage by stage or all at once. Set the species and types of model desired and run.
+	-"1-Wrapper.R" should be customised to whatever is required. By default internal references should work for anyone, but external links (in particular links to downloaded data not included in the repo) should be checked.
+	- "SeabirdSDM.R" The default settings in the wrapper file should allow this to be run without changes. However there are numerous custom settings that you may wish to change. In which case consult this file. This calls on all the other scripts, and can be opened and run stage by stage or all at once. Set the species and types of model desired and run.
 
 "SeabirdSDM.R" assumes:
 	-the repo is present and up to date
 	-required packages are installed
-	-File paths are correct in "SetDirectories.R"
+	-File paths are correct in "1-Wrapper"
 	-OSPAR shapefile is present (to set limits of study area)
-	-Occurrence data is present as a .tif. By default this is expected to be named "" but this can be changed in "SetDirectories"
-	-Environmental data is present as a rasterStack. By default this is expected to be named "" but this can be changed in "SetDirectories"
+	-Occurrence data is present as a shapefile. By default this is expected to be named the species name in question but this can be changed in the wrapper file
+	-Environmental data is present as a rasterStack. By default this is expected to be named e.g. MarineEnvVariables_5m.tif but this can be changed in the wrapper file
 If the above 
 
+
+There are also several other code files which do not to be adjusted. They are all called from 1-Wrapper.R
+	-CheckDependencies.R: does a quick check the required libraries and folders are in place
+	-CalculateDistShore.R: one of the key parts about combinging terrestrial and marine data is we need to work out which area of the sea is closest to a given terrestrial grid-cell and vice versa. This file contains the code to do this. See the file notes for more detail
+	-CombineEnvData.R: after the previous file has worked out distances and indexes, this file actually combines information from terrestrial and marine raster stacks into combined stacks.
+
+In the "Dependencies" there are a number of function files which are used throughout
+	-prepFunctions.R: various functions to combine terrestrial and marine data
+	-SDM_functions.R: the actual function and code used to run an ensemble SDM model
+	-SDM_functionsPre.R: code and functions to prepare and check data prior to running an SDM model
 
 
 ### ###
@@ -72,21 +98,9 @@ If the above
 
 ### OUTPUT ###
 
-All final output will be in the "FinalOutput" folder
-
-
+For individual steps various diagnositic plots and output is stored in the "IntermediateOutput" folder
+All final SDM output will be in the "FinalOutput" folder
 
 
 ### ### 
-
-
-For information on raw data see "DataSources.txt"
-
-The "SetDirectories" R file can be customised to the required file path, but my system is based on the following:
-In the RawData folder is the original data exactly as downloaded
-In the Processed Data is any cleaned data processed by code in the "DataProcessing" folder
-
-
-Any output made by this or any other code in the repo is stored in the "IntermediateOutput" folder
-
 

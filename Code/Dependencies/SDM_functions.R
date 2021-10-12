@@ -1,5 +1,31 @@
 
+############################################################
+############################################################
+### SEABIRD SDM FUNCTIONS ###
+############################################################
+############################################################
 
+### META ###
+# by HHakkinen
+# Start Date: 25/01/2021
+# End Date: 08/10/2021
+# As part of Institute of Zoology ZSL / University of Cambridge project
+# "Terrestrial or marine species distribution model - Why not both? A case study with seabirds"
+# 
+# Called from SeabirdSDM.R. Not currently in the form of proper functions to make debugging easier. 
+# After loading occ data and env data (in SDM_functionsPre.R), checking formatting and covariance this file is run
+#there are several sections, broadly this file has:
+# 1) FORM DATA INTO BIOMOD SET: merges data in preparation for BIOMOD
+# 2) RUN SDM MODEL: run individual models (algorithms, pseudo-absence sets and validation sets)
+# 3) Get TSS scores: get scores and ratings from individual models, saved for inspection
+# 4) VARIABLE IMPORTANCE: estimate variable importance using pearson scores, saves output for inspection
+# 5) plot response curves: as it sounds, plots of how env variables predict prob of occurrence
+# 6) ENSEMBLE MODEL: screens (based on threshold) and combines weighted mean ensemble
+# 7) check pearson scores: if using pseudo-absences the code will check the degree of match between the two types of model (validation and full)
+#
+#output is all saved intermediateData/SeabirdsSDM
+
+### /META ###
 
 #seabirdSDM<-function(sp_name, modeltype, points, envt.st, model_list, pseudodraws, evalruns, terrmartype=NULL){
   
@@ -16,15 +42,14 @@
 
   envt.st<-stack(envt.st)
   
-  head(points)
   
   bmData <- BIOMOD_FormatingData(resp.var = points[,4],
                                  resp.xy = points[,2:3], 
                                  resp.name = as.character(points[1,1]),
                                  expl.var = envt.st,
-                                 PA.nb.rep=0, #if using pseudo absences use pseudodraws
-                                 PA.nb.absences = 0, #if using pseudo absences use nps
-                                 #PA.strategy = 'random',
+                                 PA.nb.rep=pseudodraws, #if using pseudo absences use pseudodraws
+                                 PA.nb.absences = nps, #if using pseudo absences use nps
+                                 PA.strategy = 'random',
                                  na.rm=T
   
                                  );
@@ -66,7 +91,7 @@
   ############################################################
   
   #library(maxent)
-  BIOMOD_ModelingOptions()
+  #BIOMOD_ModelingOptions()
   #NbPseudoAbsences * NbRunEval + 1 models will be created
   PIPO.mod <-BIOMOD_Modeling(data = bmData,models =model_list,
                              SaveObj = TRUE,
@@ -79,9 +104,9 @@
                              VarImport = 1)
   curID<-PIPO.mod@modeling.id
   
+  #load model if needed and explore in detail
   #load("Mbassanus/models/1614879030/Mbassanus_PA1_Full_GLM")
-  #load("Mbassanus/models/1614879030/Mbassanus_PA1_Full_GAM")
-  
+
   #glmres<-get_formal_model(Mbassanus_PA1_Full_GLM)
   #gamres<-get_formal_model(Mbassanus_PA1_Full_GAM)
   #rfres<-get_formal_model (Mbassanus_PA1_RUN1_RF)
@@ -100,7 +125,7 @@
   
   
   ############################################################
-  ### Get TSS scores ###
+  ### Get TSS (and other validation) scores ###
   ############################################################
   
   fulltss <-get_evaluations(PIPO.mod)
@@ -111,21 +136,34 @@
   fulltss["ACCURACY","Testing.data",,,]
   fulltss["ROC","Testing.data",,,]
   
+  #check output folders exist, otherwise create them
+  if(!dir.exists(paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name,"/"))){
+    dir.create(paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name))
+  }
+  if(!dir.exists(paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name,"/",modeltype))){
+    dir.create(paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name, "/", modeltype))
+  }
+
+  if(!dir.exists(paste0("./IntermediateOutput/SeabirdSDM/OutputPlots/",sp_name,"/"))){
+    dir.create(paste0("./IntermediateOutput/SeabirdSDM/OutputPlots/",sp_name))
+  }
+  if(!dir.exists(paste0("./IntermediateOutput/SeabirdSDM/OutputPlots/",sp_name,"/",modeltype))){
+    dir.create(paste0("./IntermediateOutput/SeabirdSDM/OutputPlots/",sp_name,"/",modeltype))
+  }
   
   #do this two different ways
   #1) get all validation models across all pseudo-absence sets and validation runs. Calc aver and SD
   #2) create an ensemble model containing each model type and validation set, but separated by pseudo-absence set. Calc aver and SD
-  
   TSStab<-t(as.data.frame(fulltss["TSS","Testing.data",,1:evalruns,]))
-  write.csv(TSStab,paste0("./OutputTables/",sp_name,"/",modeltype,"/FullTSS.csv"))
+  write.csv(TSStab,paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name,"/",modeltype,"/FullTSS.csv"))
   ROCtab<-t(as.data.frame(fulltss["ROC","Testing.data",,1:evalruns,]))
-  write.csv(ROCtab,paste0("./OutputTables/",sp_name,"/",modeltype,"/FullROC.csv"))
+  write.csv(ROCtab,paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name,"/",modeltype,"/FullROC.csv"))
   ACCtab<-t(as.data.frame(fulltss["ACCURACY","Testing.data",,1:evalruns,]))
-  write.csv(ACCtab,paste0("./OutputTables/",sp_name,"/",modeltype,"/FullACC.csv"))
+  write.csv(ACCtab,paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name,"/",modeltype,"/FullACC.csv"))
   TSSsensit<-t(as.data.frame(fulltss["TSS","Sensitivity",,1:evalruns,]))
-  write.csv(TSSsensit,paste0("./OutputTables/",sp_name,"/",modeltype,"/FullSENSI.csv"))
+  write.csv(TSSsensit,paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name,"/",modeltype,"/FullSENSI.csv"))
   TSSspeci<-t(as.data.frame(fulltss["TSS","Specificity",,1:evalruns,]))
-  write.csv(TSSspeci,paste0("./OutputTables/",sp_name,"/",modeltype,"/FullSPECI.csv"))
+  write.csv(TSSspeci,paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name,"/",modeltype,"/FullSPECI.csv"))
   
   
   TSSmean<-round(mean(TSStab, na.rm=T), digits=4)
@@ -152,7 +190,7 @@
             )))
   colnames(resRow)<-c("SPECIES", "MODEL TYPE","TSS", "ROC", "SENSITIVITY", "SPECIFICITY", "ACCURACY")
   write.csv(resRow,
-            paste0("./OutputTables/",sp_name,"/",modeltype,"/MEANSD_STATS.csv"))
+            paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name,"/",modeltype,"/MEANSD_STATS.csv"))
   
   
 
@@ -163,14 +201,16 @@
   
   #get for full models, work it out across all SDM models and pseudo-absence sets
   
-  
   var.imp <-drop(get_variables_importance(PIPO.mod))
-  #var.imp <- var.imp[,,"Full",]
-  var.imp <- var.imp[,,"Full"]
+  
+  #dimensions change depending on PSA or not, so swap between subsets
+  if(pseudodraws>0){var.imp <- var.imp[,,"Full",]
+    }else{  var.imp <- var.imp[,,"Full"]}
+
   vardf<-as.data.frame(apply(var.imp, 1, cbind))
   vardf$Run<-colnames(var.imp)
   
-  write.csv(vardf,paste0("./OutputTables/",sp_name,"/",modeltype,"/VarImp.csv"))
+  write.csv(vardf,paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name,"/",modeltype,"/VarImp.csv"))
   
   
   #calculate mean and SD for each column (arbitrary number of columns, last one is label and ignored)
@@ -183,7 +223,7 @@
   
   
   
-  png(filename=paste0("OutputPlots/",sp_name,"/",modeltype,"/VarImp.png"), width=24, height=8, units="in", res=300)
+  png(filename=paste0("./IntermediateOutput/SeabirdSDM/OutputPlots/",sp_name,"/",modeltype,"/VarImp.png"), width=24, height=8, units="in", res=300)
   barCenters<- barplot(height=varpl, beside=T,
                        xlab="Variable",
                        ylab = "Variable Importance",
@@ -224,7 +264,7 @@
   for(i in model_list){
     
     print(i)
-    png(filename=paste0("OutputPlots/",sp_name,"/",modeltype,"/ResCurves",i,".png"), width=16, height=8, units="in", res=300)
+    png(filename=paste0("./IntermediateOutput/SeabirdSDM/OutputPlots/",sp_name,"/",modeltype,"/ResCurves",i,".png"), width=16, height=8, units="in", res=300)
     response.plot2(models = BIOMOD_LoadModels(PIPO.mod, models=i),
                    Data = get_formal_data(PIPO.mod,'expl.var'),
                    show.variables= get_formal_data(PIPO.mod,'expl.var.names'),
@@ -289,8 +329,8 @@
   ensemun<-ensem@proj@val[[1]]
   
 
-  ensemst<-crop(ensemst, extent(-30,51,36,85))
-  ensemun<-crop(ensemun, extent(-30,51,36,85))
+  #ensemst<-crop(ensemst, extent(-30,51,36,85))
+  #ensemun<-crop(ensemun, extent(-30,51,36,85))
   
   plwm<-levelplot(ensemst/1000, 
             margin=FALSE, 
@@ -308,13 +348,13 @@
   
 
   
-  png(filename=paste0("OutputPlots/",sp_name,"/",modeltype,"/Finalensemble.png"), width=8, height=8, units="in", res=600)
+  png(filename=paste0("./IntermediateOutput/SeabirdSDM/OutputPlots/",sp_name,"/",modeltype,"/Finalensemble.png"), width=8, height=8, units="in", res=600)
   plwm +
     layer(sp.polygons(landsh, col=alpha("grey",0.3))) 
   dev.off()
     
   
-  png(filename=paste0("OutputPlots/",sp_name,"/",modeltype,"/Finalensemble_uncertainty.png"), width=8, height=8, units="in", res=600)
+  png(filename=paste0("./IntermediateOutput/SeabirdSDM/OutputPlots/",sp_name,"/",modeltype,"/Finalensemble_uncertainty.png"), width=8, height=8, units="in", res=600)
   plun +
     layer(sp.polygons(landsh, col=alpha("grey",0.3))) 
   dev.off()
@@ -521,7 +561,6 @@
     }  
     
     
-  
   valres<-as.numeric(TSS_table[grep("Valid", TSS_table$run),2])
   TSS_mean<-c("ValMean",round(mean(valres, na.rm=T),digits=4))
   TSS_sd<-c("ValSD",round(sd(valres, na.rm=T),digits=4))
@@ -530,20 +569,20 @@
   TSS_df[nrow(TSS_df)+1,]<-TSS_mean
   TSS_df[nrow(TSS_df)+1,]<-TSS_sd
   
-  write.csv(TSS_df,paste0("./OutputTables/",sp_name,"/",modeltype,"/ensTSS.csv"))
+  write.csv(TSS_df,paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name,"/",modeltype,"/ensTSS.csv"))
   
   spres<-as.numeric(Spear_table[,2])
   Spear_table[nrow(Spear_table)+1,]<-c("SpearMean",mean(spres, na.rm=T))
   Spear_table[nrow(Spear_table)+1,]<-c("SpearSD",sd(spres, na.rm=T))
   
-  write.csv(Spear_table,paste0("./OutputTables/",sp_name,"/",modeltype,"/spearman.csv"))
+  write.csv(Spear_table,paste0("./IntermediateOutput/SeabirdSDM/OutputTables/",sp_name,"/",modeltype,"/spearman.csv"))
   
   
   
   
   
   #################################################
-  ### MODEL EACH INDIVIDUAL MODEL ###
+  ### MODEL EACH INDIVIDUAL MODEL (deprecated)###
   #################################################
   # 
   # for(i in model_list){
@@ -607,7 +646,7 @@
   #summary(get_formal_model(Mbassanus_PA2_Full_GAM))
   
   
-  save.image(file=paste0("rstates/",sp_name,"_",modeltype, ".RData"))
+  save.image(file=paste0("./IntermediateOutput/SeabirdSDM/rstates/",sp_name,"_",modeltype, ".RData"))
   
   
 #}
