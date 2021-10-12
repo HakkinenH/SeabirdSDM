@@ -11,7 +11,7 @@
 	Start Date: 01/02/2021
 	End Date: 20/09/2021
 	As part of Institute of Zoology ZSL project
-	"Evidence-based Climate Change Adaptation Practices to safeguard vulnerable species: supporting conservation practitioners, donors and policy makers"
+	"Terrestrial or marine species distribution model - Why not both? A case study with seabirds"
 
 
 The following is a description of the raw data required to run the SDM code
@@ -21,9 +21,7 @@ However underneath we specify how to acquire the data and any processing require
 ### ###
 
 
-The "SetDirectories" R file can be customised to the required file path, but my system is based on the following:
-In the RawData folder is the original data exactly as downloaded
-In the Processed Data is any cleaned data processed by code in the "DataProcessing" folder
+The "1-Wrappers" R file can be customised to any required file path, but the default assumes you put data in the "InputData" folder
 
 
 ### DEFINED AREA OF INTEREST ###
@@ -74,9 +72,8 @@ In the Processed Data is any cleaned data processed by code in the "DataProcessi
 		27th Jan 2021
 
 
-	### The final outline shape of the OSPAR region was made with "Code/DataProcessing/ospar_regions_2017_01_002/CreateCustomOSPAR.qgis"
-		See "BuildingAreaofInterest.txt" in the same folder for instructions on how to do this
-		Processed OSPAR region shape ready to be used is in ProcessedData/OSPAR_region
+	### The final outline shape of the OSPAR region was made with in QGIS
+		See methods section of paper. Final shape is provided in InputData as "OSPAR_LandSea.shp"
 		
 	 
 
@@ -111,10 +108,10 @@ In the Processed Data is any cleaned data processed by code in the "DataProcessi
 	#Compiler
 		For some reason the compiler can be split for a species, these are merged to make it simpler.
 		
-	### Filters and settings are in Code/DataProcessing/Birdlife-RangeDatabase_Dec2020
 	
-	We convert this to a spatially disaggregated lat/lon file using PrepOcc.R. It takes a polygon and spits out a spatial point dataframe.
+	We convert this to a spatially disaggregated lat/lon file. It takes a polygon and spits out a spatial point dataframe.
 	In addition, for species that do not have a clear marine breeding marine range, we use foraging distance to "crop" the total range and ignore points far out to sea that would otherwise be included (see methods).
+	
 	
 
 ### ###
@@ -137,13 +134,13 @@ In the Processed Data is any cleaned data processed by code in the "DataProcessi
 				
 				Marine values are trickier as there is LOADS of raw data available and trawling through it to get a usable dataset is tricky.
 				In addition most of these are at 5min resolution (close to source resolution), not many are interpolated to 30s
-				In the absence of a clear 30s dataset I stUck to 5min as high-res information is less important at sea, can resample if needed
+				In the absence of a clear 30s dataset I stuck to 5min as high-res information is less important at sea, can resample if needed
 				
 				Currently the main marine variables are sea surface temperature during the winter/spring, maximum chlorophyll concentration (as sea surface), bathymetry, distance to land
 				
 		
 		Note that for some pieces of work I use SDMpredictors which is just a wrapper to download the above sources
-		Anything downloaded through the package is placed in RawData/sdmpredictors rather than any of the above
+		Anything downloaded through the package is placed in InputData and then processed
 		Other raw data is in a folder named after the source (as above)
 		
 		Note that marine layers are derived from raw data, a comparison of raw data sources can be found here: https://climatedataguide.ucar.edu/climate-data/sst-data-sets-overview-comparison-table
@@ -161,7 +158,7 @@ In the Processed Data is any cleaned data processed by code in the "DataProcessi
 			Trying to download takes you to either a server (which is a pain to use)
 			or to the NASA EarthData download portal. However this portal does not actually let you download, it just gives you server links
 			
-			These links can then be fed to an API, e.g. cmd/python/R. I used R (DownloadMODIS_NDVI.R)
+			These links can then be fed to an API, e.g. cmd/python/R. I used R.
 				Downloaded 15th March 2021
 
 		### ###

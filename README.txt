@@ -11,8 +11,7 @@
 	Start Date: 01/02/2021
 	End Date: 20/09/2021
 	As part of Institute of Zoology ZSL project
-	"Evidence-based Climate Change Adaptation Practices to safeguard vulnerable species: supporting conservation practitioners, donors and policy makers"
-
+	"Terrestrial or marine species distribution model - Why not both? A case study with seabirds"
 
 We assess building terrestrial, marine and combined species distribution models (SDMs) for seabirds in Europe.
 The following is a description of the files and folders required to run the models and generate outputs
@@ -27,7 +26,10 @@ The following is a description of the files and folders required to run the mode
 	# Code: The main repo folder containing all major code and functions. Described in more detail below
 		#Dependencies: Underlying custom functions used in multiple scripts
 		
-	#InputData: The occurrence and environmental data to process and use. Also a shapefile of the study area extent
+	#InputData: 
+		#EnvData: environmental data in a raster stack
+		#OccData: Species occurrence data shapefiles or spatial point dataframe
+		#StudyArea:  a shapefile of the study area extent
 	
 	# FinalOutput: Final figures and tables produced by main SDM. Used to assess final results or produce final figures/tables for inclusion in paper
 
@@ -44,19 +46,19 @@ The following is a description of the files and folders required to run the mode
 	However we specify how to acquire the data and any processing required in "DataSources.txt"
 	It is assumed by the code the data will be stored in the folder "InputData". These directories can be adjusted in "1-Wrapper.R".
 
-	In order to run an SDM you need to have the following files compiled. This can be done with the files included in "DataProcessing" or can be done manually outside of the repo.
+	In order to run an SDM you need to have the following files compiled. This can be done with the code provided or can be done manually outside of the repo.
 	
 	
 	
 	### ENV DATA
 		#MARINE
-		A raster stack of marine variables. This should be aligned and cropped to the study area. Name is assumed to be "MarineEnvVariables_5m.tif" but this can be changed in "Directories.R"
+		A raster stack of marine variables. This should be aligned and cropped to (near) the study area. Name is assumed to be "MarineEnvVariables_5m.tif" but this can be changed in "Directories.R"
 		
 		#TERRESTRIAL
-		A raster stack of terrestrial variables. This should be aligned and cropped to the study area. Name is assumed to be "TerrEnvVariables_5m.tif" but this can be changed in "Directories.R"
+		A raster stack of terrestrial variables. This should be aligned and cropped to (near) the study area. Name is assumed to be "TerrEnvVariables_5m.tif" but this can be changed in "Directories.R"
 		
 	### OCCURRENCE DATA
-	This should be prepared occurrence data, in the form of a spatial points dataframe or shapefile. Names are assumed to be "speciesname"
+	This should be prepared occurrence data, in the form of a spatial points dataframe or shapefile. I store these in folders named after the species name, but can be adjusted
 	
 	### STUDY AREA
 	This is provided in "InputData/StudyArea" as "ospar_LandSea.shp". For how this was made see "DataSources.txt". can be replaced with whatever area you prefer.
@@ -69,9 +71,9 @@ The following is a description of the files and folders required to run the mode
 All code required to run the model is in the "code" folder
 
 If all data is present, then only two files need to be opened and adjusted
-	-"1-Wrapper.R" should be customised to whatever is required. By default internal references should work for anyone, but external links (in particular links to downloaded data not included in the repo) should be checked.
-	- "SeabirdSDM.R" The default settings in the wrapper file should allow this to be run without changes. However there are numerous custom settings that you may wish to change. In which case consult this file. This calls on all the other scripts, and can be opened and run stage by stage or all at once. Set the species and types of model desired and run.
-
+	-"1-Wrapper.R" should be customised to whatever is required. By default internal references should work for anyone, but external links (in particular links to downloaded data not included in the repo) should be checked.  This calls on all the other scripts, and can be opened and run stage by stage or all at once. Set the species and types of model desired and run.
+	- "SeabirdSDM.R" The default settings in the wrapper file should allow this to be run without changes. However there are numerous custom settings that you may wish to change. In which case consult this file.
+	
 "SeabirdSDM.R" assumes:
 	-the repo is present and up to date
 	-required packages are installed
