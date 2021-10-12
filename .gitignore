@@ -3,13 +3,22 @@
 .RData
 .Ruserdata
 
+
+#anything in input folder
+/Input/EnvData/
+/Input/OccData/
+/Input/StudyArea/
+
 #anything in final plot
 /FinalOutput/
 
 #anything in intermediate output
-/IntermediateOutput/
+/IntermediateOutput/CalculateDistShore
+/IntermediateOutput/CombineEnvData
+/IntermediateOutput/SeabirdSDM
 
 #ignore the .DS_Store files
 *DS_Store
 
 
+/Sdougallii/
