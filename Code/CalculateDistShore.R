@@ -46,9 +46,9 @@ Terr.crop<-TerrPredictors[[1]]
 Mar.crop<-MarinePredictors[[1]]
 
 #can cut down a lot more to make testing faster
-ospar<-crop(ospar, extent(-7,5,50,58))
-Mar.crop<-crop(Mar.crop, ospar)
-Terr.crop<-crop(Terr.crop, ospar)
+#ospar<-crop(ospar, extent(-7,5,50,58))
+#Mar.crop<-crop(Mar.crop, ospar)
+#Terr.crop<-crop(Terr.crop, ospar)
 
 
 #useful little section for finding where layers overlap

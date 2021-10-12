@@ -36,7 +36,7 @@
 rm(list=ls())
 
 #set current directory. Should be root of the repo folder
-setwd("C:/Users/Henry/Documents/Research/ZSL/Repos/SeabirdsSDM_forPub")
+setwd("LOCATION_OF_REPO")
 
 #check and load libraries
 source("./Code/CheckDependencies.R")
@@ -65,7 +65,7 @@ RunAddTerr <- TRUE
 # Save raster output? (T/F)
 output <- TRUE
 # save plots of variables? (T/F)
-plotVar <- FALSE
+plotVar <- TRUE
 
 # what location would you like to save output (in relation to the working directory)
 outpath <- "./IntermediateOutput/CombineEnvData/"

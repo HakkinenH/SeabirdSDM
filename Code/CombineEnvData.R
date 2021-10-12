@@ -423,7 +423,7 @@ if (plotVar){
 
   
   #now loop through terrestrial points
-  if (RunTerr){
+  if (RunAddMarine){
     
     varList<-c()
     for(lim in MarLayerNames){

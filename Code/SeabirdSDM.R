@@ -122,7 +122,7 @@ for (i in 1:length(sp_list)){
 
       
       #run the actual model, calls code and functions from SDM file
-      source("../../code/SDM_functions.R")
+      source("./Code/Dependencies/SDM_functions.R")
       end.t<-Sys.time()
       
       print(end.t-start.t)
