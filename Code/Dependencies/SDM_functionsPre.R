@@ -2,7 +2,7 @@
 
 
 readENVdata<-function(sp_name, modeltype, coastClip=NA){
-
+  
   ##read in terrestrial points
   if(modeltype %in% c("TerrOnly","TerrwithMar")){
     
@@ -46,10 +46,10 @@ readENVdata<-function(sp_name, modeltype, coastClip=NA){
       #### NOTE BECAUSE I DIDN'T RUN PREPENVDATA ALL THE WAY FROM THE TOP, 
       #there is now manual fudge here where I add land cover manually
       #this can be corrected by running prepenvdata from the top!
-
+      
       #Get environmental variables
       envt.st<-stack(paste0("../PrepEnvData/TerrwithMarineVar_5min_",sp_name,".tif"))
-
+      
       names(envt.st) <- c("MeanTemp_WM", "Prec_BreedMonths", "Isol",
                           "Area", "LandCover", "distToSea","nearestSeaCell",
                           "NDVI_mean", "NDVI_min",
@@ -126,15 +126,15 @@ readENVdata<-function(sp_name, modeltype, coastClip=NA){
       
       
     }
-   
-
+    
+    
     
     #some final cropping and cleaning
     
     #remove any points further from the sea than distance defined coastClip
     if(!is.na(coastClip)){
       envt.st[envt.st$distToSea>=coastClip]<-NA
-
+      
     }
     
     
@@ -145,7 +145,7 @@ readENVdata<-function(sp_name, modeltype, coastClip=NA){
     #get rid of med
     envt.st2<-envt.st
     envt.st2[which((coordinates(envt.st2)[,2]<47.5 & coordinates(envt.st2)[,1]>1) |
-                    (coordinates(envt.st2)[,2]<42.1 & coordinates(envt.st2)[,1]>-5))]<-NA
+                     (coordinates(envt.st2)[,2]<42.1 & coordinates(envt.st2)[,1]>-5))]<-NA
     
     envt.st3<-envt.st2
     #get rid of any lingering greenland points
@@ -156,7 +156,7 @@ readENVdata<-function(sp_name, modeltype, coastClip=NA){
     #plot(envt.st3$MeanTemp_WM)
     #the bits we've just removed if you want to see
     #plot(is.na(envt.st3$MeanTemp_WM) & !is.na(envt.st$MeanTemp_WM))
-
+    
     envt.st<-envt.st3
     #names are lost, reinsert
     names(envt.st)<-layercodes
@@ -216,7 +216,7 @@ readENVdata<-function(sp_name, modeltype, coastClip=NA){
                            NLand_PrecBM = "Precip on nearest land",
                            NLand_Isol = "Nearest land iso",
                            NLand_NDVImin = "nearest land NDVI min"
-                           )
+      )
     }
     
     
@@ -243,9 +243,9 @@ readENVdata<-function(sp_name, modeltype, coastClip=NA){
     greenInd<-read.csv("GreenlandIndices.csv")[,2]
     checkLay<-indLayer$nearestLandCell %in% greenInd
     checkDF<-as.data.frame(checkLay)
-
+    
     envt.st3[which(checkDF$layer==1)]<-NA
-
+    
     #remove any lingering points (probably unnessary as they have values in some layers)
     envt.st4<-envt.st3
     
@@ -294,7 +294,7 @@ readENVdata<-function(sp_name, modeltype, coastClip=NA){
 
 
 readOCCdata<-function(sp_name, modeltype, envt.st, coastClip=NA){
-
+  
   #Read in occ
   #special case for Mbassanus
   if (sp_name == "Mbassanus"){
@@ -304,7 +304,7 @@ readOCCdata<-function(sp_name, modeltype, envt.st, coastClip=NA){
     }else{
       spdf<-readOGR(paste0("../PrepOccData/",sp_name,"BreResBreedingSp.tif"))
     }
-  
+    
   }else{
     spdf<-readOGR(paste0("../PrepOccData/",sp_name,"BreedingSp.tif"))
   }
@@ -316,16 +316,16 @@ readOCCdata<-function(sp_name, modeltype, envt.st, coastClip=NA){
   #plot(points$coords.x1,points$coords.x2,col=as.factor(points$Response))
   points<-points[,c(3,1,2,4)]
   
-
+  
   #Get data points
   #points <- cbind(points, rep.int(1, length(nrow(points)))); #Adds another column indicating these are presence points
   colnames(points) <- c("Species", "X", "Y", "Response");
-
+  
   
   #get count of total points
   #get count of points that only exist on land/sea (as relevant)
   #get number of points that lie within our coastal boundary
-
+  
   #ranges may need to be clipped by foraging distance, these are set
   if(sp_name=="Farctica"){maxfor<-40000}
   if(sp_name=="Mbassanus"){maxfor<-200000}
@@ -343,12 +343,12 @@ readOCCdata<-function(sp_name, modeltype, envt.st, coastClip=NA){
     if(modeltype %in% c("MarOnly", "MarwithTerr")){
       points_range<-points[complete.cases(rasvals) & rasvals[,"distShore"] <= coastClip,]
     }
-
+    
   }else{
     points_range<-points[complete.cases(rasvals),]
   }
   
-
+  
   #for puffins and terns we have a defined marine range so can leave as is
   #for gannets there is no distinction between breeding and resident so we clip to max breeding range
   # if(sp_name == "Mbassanus" & modeltype %in% c("MarOnly", "MarwithTerr")){
@@ -373,9 +373,9 @@ readOCCdata<-function(sp_name, modeltype, envt.st, coastClip=NA){
   
   png(filename=paste0(sp_name,"_rangemap.png"), width=8, height=8, units="in", res=300)
   #plot(points[,2:3],col="blue", pch=3, cex=0.1, 
-       #ylab="", xlab=paste0("Blue: Invalid  Green: valid and in range (km)"))
-
-
+  #ylab="", xlab=paste0("Blue: Invalid  Green: valid and in range (km)"))
+  
+  
   #add valid points that are also in range
   plot(points_range[,2:3],col=as.factor(points_range$Response), pch=3, cex=0.1)
   plot(newmap,add=T)
@@ -383,7 +383,7 @@ readOCCdata<-function(sp_name, modeltype, envt.st, coastClip=NA){
   title(cex.sub = 1.25, main = paste(sp_name, "Occurrence map"))
   dev.off()
   
-
+  
   #nvalid<<-nrow(rasvals_all)
   return(points_range)
 }
@@ -393,7 +393,7 @@ readOCCdata<-function(sp_name, modeltype, envt.st, coastClip=NA){
 buildGreenlandIndex<-function(){
   
   #construct an index for the NE atlantic and find the indecies for Greenland
-
+  
   searchpath<-"C:/Users/Henry/Documents/Research/ZSL/RawData/WorldClim/wc2.1_5m_tavg"
   file_list<-list.files(path= searchpath,pattern="*.tif")
   TerrPre<-raster(paste0(searchpath,"/",file_list[1]))
@@ -410,15 +410,15 @@ buildGreenlandIndex<-function(){
   
   #choose only land cellse
   Terrdf_l<-Terrdf_full[!is.na(Terrdf_full$MeanTemp_W),]
-    
+  
   #crop to boundaries of greenland
   Terrdf<-Terrdf_l[which( (Terrdf_l$x <= -7 & Terrdf_l$y>75) |
-                          (Terrdf_l$x <= -13 & Terrdf_l$y>67.5) | 
-                          (Terrdf_l$x <= -28 & Terrdf_l$y>59) ), ]
+                            (Terrdf_l$x <= -13 & Terrdf_l$y>67.5) | 
+                            (Terrdf_l$x <= -28 & Terrdf_l$y>59) ), ]
   
   plot(Terrdf_l$x,Terrdf_l$y,cex=0.1)
   points(Terrdf$x, Terrdf$y, cex=0.2, col="green")
-
+  
   #strictly this isn't just greenland and includes bits of North America
   #doesn't matter though
   write.csv(Terrdf$ID, "GreenlandIndices.csv")

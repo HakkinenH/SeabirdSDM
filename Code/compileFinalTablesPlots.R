@@ -26,7 +26,12 @@ source("../../code/logSettings.R")
 ospar<-shapefile("C:/Users/Henry/Documents/Research/ZSL/ProcessedData/OSPAR_region/ospar_LandSea.shp")
 os.ext<-extent(ospar)
 
+#load simplified map for plotting purporse
+landsh<-shapefile("C:/Users/Henry/Documents/Research/ZSL/ProcessedData/EEAcoastlines/SimpleLandOutline_wgs84.shp")
+
+
 ###SET PARAMETERS###
+
 
 #set output folder name
 nowT<-as.Date(Sys.time(),format='%y%m%d')
@@ -264,9 +269,23 @@ for (i in 1:length(spall)){
   pcheck$y<-points$Y
   assign(paste0(sp,".Marpoints"), pcheck[complete.cases(pcheck),])
   
+  permlist<-c("ospar", "os.ext", "nowT", 
+    "outpath", "spall", "realmlist", 
+    "terrmarlist", "manCoastDist", "pseudodraws", 
+    "evalruns", "nvalid", "model_list",
+    "resTab", "landsh")
   
+  rm(list=setdiff(ls(), c(permlist, "Mbassanus.Terrpoints", "Mbassanus.Marpoints", "Mbassanus.TerrOnlyEns", 
+                          "Mbassanus.TerrwMarEns", "Mbassanus.MarOnlyEns", "Mbassanus.MarwTerrEns",
+                          
+                          "Farctica.Terrpoints", "Farctica.Marpoints", "Farctica.TerrOnlyEns",
+                          "Farctica.TerrwMarEns", "Farctica.MarOnlyEns", "Farctica.MarwTerrEns",
+                          
+                          "Sdougallii.Terrpoints", "Sdougallii.Marpoints", "Sdougallii.TerrOnlyEns",
+                          "Sdougallii.TerrwMarEns", "Sdougallii.MarOnlyEns", "Sdougallii.MarwTerrEns"
+                          )))
 
-  
+  gc()
 }
 
 #########################
@@ -346,10 +365,14 @@ legPlot<-levelplot(Mbassanus.TerrOnlyEns/1000,
               #main=list('Legend', cex=1.5),
               par.settings=myTheme)
 
-png(filename=paste0(outpath,"/Fig2and3/LegendPlot.png"), width=4, height=5, units="in", res=500)
+png(filename=paste0(outpath,"/Fig2and3/LegendPlot2.png"), width=4, height=5, units="in", res=1000)
 legPlot
 dev.off()
 
+setEPS()
+postscript(paste0(outpath,"/Fig2and3/LegendPlot.eps"))
+print(legPlot)
+dev.off()
 
 #ROW 1: M bassanus 
 
@@ -426,11 +449,11 @@ png(filename=paste0(outpath,"/Fig2and3/Fig1Mbaocc.png"), width=4, height=5, unit
 M1
 dev.off()
 
-png(filename=paste0(outpath,"/Fig2and3/Fig1MbbTerrOnly.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig1MbbTerrOnly.png"), width=4, height=5, units="in", res=1000)
 M2
 dev.off()
 
-png(filename=paste0(outpath,"/Fig2and3/Fig1MbcTerrwMar.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig1MbcTerrwMar.png"), width=4, height=5, units="in", res=1000)
 M3
 dev.off()
 
@@ -507,15 +530,15 @@ M3<-M3 + eur
 
 
 #9 part panel (Terrestrial)
-png(filename=paste0(outpath,"/Fig2and3/Fig1Faaocc.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig1Faaocc.png"), width=4, height=5, units="in", res=1000)
 M1
 dev.off()
 
-png(filename=paste0(outpath,"/Fig2and3/Fig1FabTerrOnly.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig1FabTerrOnly.png"), width=4, height=5, units="in", res=1000)
 M2
 dev.off()
 
-png(filename=paste0(outpath,"/Fig2and3/Fig1FacTerrwMar.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig1FacTerrwMar.png"), width=4, height=5, units="in", res=1000)
 M3
 dev.off()
 
@@ -595,15 +618,15 @@ M3<-M3 + eur
 
 
 #9 part panel (Terrestrial)
-png(filename=paste0(outpath,"/Fig2and3/Fig1Sdaocc.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig1Sdaocc.png"), width=4, height=5, units="in", res=1000)
 M1
 dev.off()
 
-png(filename=paste0(outpath,"/Fig2and3/Fig1SdbTerrOnly.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig1SdbTerrOnly.png"), width=4, height=5, units="in", res=1000)
 M2
 dev.off()
 
-png(filename=paste0(outpath,"/Fig2and3/Fig1SdcTerrwMar.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig1SdcTerrwMar.png"), width=4, height=5, units="in", res=1000)
 M3
 dev.off()
 
@@ -706,15 +729,15 @@ M3<-M3 + eur
 
 
 #9 part panel (Terrestrial)
-png(filename=paste0(outpath,"/Fig2and3/Fig2Mbaocc.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig2Mbaocc.png"), width=4, height=5, units="in", res=1000)
 M1
 dev.off()
 
-png(filename=paste0(outpath,"/Fig2and3/Fig2MbbMarOnly.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig2MbbMarOnly.png"), width=4, height=5, units="in", res=1000)
 M2
 dev.off()
 
-png(filename=paste0(outpath,"/Fig2and3/Fig2MbcMarwMar.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig2MbcMarwMar.png"), width=4, height=5, units="in", res=1000)
 M3
 dev.off()
 
@@ -791,15 +814,15 @@ M3<-M3 + eur
 
 
 #9 part panel (Terrestrial)
-png(filename=paste0(outpath,"/Fig2and3/Fig2Faaocc.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig2Faaocc.png"), width=4, height=5, units="in", res=1000)
 M1
 dev.off()
 
-png(filename=paste0(outpath,"/Fig2and3/Fig2FabMarOnly.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig2FabMarOnly.png"), width=4, height=5, units="in", res=1000)
 M2
 dev.off()
 
-png(filename=paste0(outpath,"/Fig2and3/Fig2FacMarwTerr.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig2FacMarwTerr.png"), width=4, height=5, units="in", res=1000)
 M3
 dev.off()
 
@@ -879,15 +902,15 @@ M3<-M3 + eur
 
 
 #9 part panel (Marine)
-png(filename=paste0(outpath,"/Fig2and3/Fig2Sdaocc.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig2Sdaocc.png"), width=4, height=5, units="in", res=1000)
 M1
 dev.off()
 
-png(filename=paste0(outpath,"/Fig2and3/Fig2SdbMarOnly.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig2SdbMarOnly.png"), width=4, height=5, units="in", res=1000)
 M2
 dev.off()
 
-png(filename=paste0(outpath,"/Fig2and3/Fig2SdcMarwTerr.png"), width=4, height=5, units="in", res=300)
+png(filename=paste0(outpath,"/Fig2and3/Fig2SdcMarwTerr.png"), width=4, height=5, units="in", res=1000)
 M3
 dev.off()
 
@@ -1028,7 +1051,7 @@ for (i in vardf.table){
   
   
   
-  png(filename=paste0(outpath,"/Fig4/",spnow,modnow,"_VarImp.png"), width=13, height=5, units="in", res=300)
+  png(filename=paste0(outpath,"/Fig4/",spnow,modnow,"_VarImp.png"), width=13, height=5, units="in", res=1000)
   
   barCenters<- barplot(height=rescom$varpl, beside=T,
                        xlab="Variable",
@@ -1105,7 +1128,7 @@ for (x in uncerList){
   
   supp1<-supp1 + eur
   
-  png(filename=paste0(outpath,"/SuppFig2and3/",x,".png"), width=5, height=5, units="in", res=300)
+  png(filename=paste0(outpath,"/SuppFig2and3/",x,".png"), width=5, height=5, units="in", res=1000)
   print(supp1)
   dev.off()
 
@@ -1123,7 +1146,7 @@ legPlot<-levelplot(Mbassanus.TerrOnlyUncertainty/1000,
                    #main=list('Legend', cex=1.5),
                    par.settings=myTheme)
 
-png(filename=paste0(outpath,"/SuppFig2and3/LegendPlot.png"), width=5, height=5, units="in", res=500)
+png(filename=paste0(outpath,"/SuppFig2and3/LegendPlot.png"), width=5, height=5, units="in", res=1000)
   legPlot
 dev.off()
 
